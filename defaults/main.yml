@@ -1,0 +1,31 @@
+---
+openvpn_asserts:           True
+
+openvpn_user:              'nobody'
+openvpn_group:             'nogroup'
+
+openvpn_ip_range:          '10.8.0.0' 
+openvpn_ip_netmask:        '255.255.255.0'
+
+openvpn_port:              1194
+openvpn_proto:             'tcp'
+openvpn_dev:               'tun'
+
+openvpn_compress:          'lz4-v2'
+
+openvpn_client_to_client:  False
+
+openvpn_maxclients:        10
+
+openvpn_keepalive_ping:    10
+openvpn_keepalive_timeout: 120
+
+openvpn_tls_auth:          False
+openvpn_cipher:            'AES-256-GCM'
+openvpn_auth:              'SHA384'
+openvpn_tls_cipher:        'TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384:TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384'
+
+openvpn_log_verbosity:     3
+openvpn_mute:              20
+openvpn_log_status:        '/var/log/openvpn-status.log'
+openvpn_log_append:        '/var/log/openvpn.log'

@@ -1,0 +1,54 @@
+# ansible managed - DO NOT EDIT MANUALLY !!!
+# official documentation - https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4/
+
+user                  {{ openvpn_user }}
+group                 {{ openvpn_group }}
+
+server                {{ openvpn_ip_range }} {{ openvpn_ip_netmask }}
+port                  {{ openvpn_port }}
+proto                 {{ openvpn_proto }}
+dev                   {{ openvpn_dev }}
+
+keepalive             {{ openvpn_keepalive_ping }} {{ openvpn_keepalive_timeout }}
+
+ca                    /etc/openvpn/{{ ansible_hostname }}/keys/ca.crt
+cert                  /etc/openvpn/{{ ansible_hostname }}/keys/{{ ansible_hostname }}.crt
+key                   /etc/openvpn/{{ ansible_hostname }}/keys/{{ ansible_hostname }}.key
+dh                    /etc/openvpn/{{ ansible_hostname }}/keys/dh.pem
+{% if openvpn_tls_auth is defined and openvpn_tls_auth == "true" %}
+tls-auth              /etc/openvpn/{{ ansible_hostname }}/keys/ta.key 0
+{% endif %}
+
+cipher                {{ openvpn_cipher }}
+auth                  {{ openvpn_auth  }}
+tls-cipher            {{ openvpn_tls_cipher }}
+
+compress              {{ openvpn_compress }}
+push                  "compress {{ openvpn_compress }}"
+
+max-clients           {{ openvpn_maxclients }}
+
+ifconfig-pool-persist /etc/openvpn/{{ ansible_hostname }}/ipp.txt
+
+{% if openvpn_push_route is defined %}
+{% for route in openvpn_push_route %}
+push                  "route {{ route.ip }} {{ route.netmask }}"
+{% endfor %}
+{% endif %}
+
+persist-key
+persist-tun
+
+verb                  {{ openvpn_log_verbosity }}
+status                {{ openvpn_log_status }}
+log-append            {{ openvpn_log_append }}
+
+mute                  {{ openvpn_mute }}
+
+{% if openvpn_proto is defined and openvpn_proto == "udp" %}
+explicit-exit-notify  5
+{% endif %}
+
+{% if openvpn_client_to_client is defined and openvpn_client_to_client is sameas true %}
+client-to-client
+{% endif %}

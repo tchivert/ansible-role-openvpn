@@ -1,0 +1,8 @@
+# ansible managed - DO NOT EDIT MANUALLY !!!
+# official documentation - https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4/
+#
+# <user>,<ip_address>
+
+{% for user in openvpn_client %}
+{{ user.name }},{{ user.ip }}
+{% endfor %}

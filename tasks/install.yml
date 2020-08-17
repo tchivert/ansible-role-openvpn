@@ -1,0 +1,39 @@
+---
+- name: 'openvpn | update APT Cache'
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  tags: ['openvpn', 'openvpn_install']
+
+- name: 'openvpn | install packages'
+  apt:
+    name:
+      - openvpn
+      - openssl
+      - easy-rsa
+    state: present
+  tags: ['openvpn', 'openvpn_install']
+
+- name: 'openvpn | create directories'
+  file:
+    path: /etc/openvpn/{{ ansible_hostname }}/keys
+    state: directory
+    mode: '0755'
+  tags: ['openvpn', 'openvpn_install']
+
+- name: 'openvpn | copy easy-rsa'
+  copy:
+    src: /usr/share/easy-rsa
+    dest: /etc/openvpn/{{ ansible_hostname }}
+    owner: root
+    group: root
+  tags: ['openvpn', 'openvpn_install']
+
+- name: 'openvpn | chmod +x easyrsa'
+  file:
+    path: /etc/openvpn/{{ ansible_hostname }}/easy-rsa/easyrsa
+    owner: root
+    group: root
+    mode: 0755
+  tags: ['openvpn', 'openvpn_install']
+

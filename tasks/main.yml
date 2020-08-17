@@ -1,0 +1,19 @@
+---
+- name: 'Check if ansible version >= 2.7.'
+  assert:
+    that: "ansible_version.full is version_compare(2.7, '>=')"
+    msg: "Une version Ansible 2.7 ou supérieur est nécessaire pour utiliser cette version du rôle."
+  tags: always
+
+- include_tasks: asserts.yml
+  when: openvpn_asserts
+  tags: always
+
+- include_tasks: install.yml
+  tags: ['openvpn','openvpn_install']
+
+- include_tasks: server.yml
+  tags: ['openvpn', 'openvpn_server']
+
+- include_tasks: client.yml
+  tags: ['openvpn', 'openvpn_client']

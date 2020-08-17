@@ -1,0 +1,56 @@
+---
+- name: 'openvpn | create client directory'
+  file:
+    path: /etc/openvpn/client/{{ item.name }}/
+    state: directory
+    mode: '0755'
+  loop: "{{ openvpn_client }}"
+  tags: ['openvpn', 'openvpn_client']
+
+- name: 'openvpn | create client request'
+  command: ./easyrsa --batch --req-cn={{ item.name }} gen-req {{ item.name }} nopass
+  args:
+    chdir: /etc/openvpn/{{ ansible_hostname }}/easy-rsa
+  environment:
+    EASYRSA_BATCH: 1
+  loop: "{{ openvpn_client }}"
+  tags: ['openvpn', 'openvpn_client']
+
+- name: 'openvpn | create client certificates'
+  command: ./easyrsa sign-req client {{ item.name }}
+  args:
+    chdir: /etc/openvpn/{{ ansible_hostname }}/easy-rsa
+  environment:
+    EASYRSA_BATCH: 1
+  loop: "{{ openvpn_client }}"
+  tags: ['openvpn', 'openvpn_client']
+
+- name: 'openvpn | copy client certificate'
+  copy:
+    src: "/etc/openvpn/{{ ansible_hostname }}/easy-rsa/pki/issued/{{ item.name }}.crt"
+    dest: "/etc/openvpn/client/{{ item.name }}/{{ item.name }}.crt"
+    remote_src: yes
+  loop: "{{ openvpn_client }}"
+  tags: ['openvpn', 'openvpn_client']
+
+- name: 'openvpn | copy client private key'
+  copy:
+    src: "/etc/openvpn/{{ ansible_hostname }}/easy-rsa/pki/private/{{ item.name }}.key"
+    dest: "/etc/openvpn//client/{{ item.name }}/{{ item.name }}.key"
+    remote_src: yes
+  loop: "{{ openvpn_client }}"
+  tags: ['openvpn', 'openvpn_client']
+
+- name: 'openvpn | create client configuration file'
+  template:
+    src: "../data/openvpn/client.ovpn.j2"
+    dest: "/etc/openvpn/client/{{ item.name }}/{{ item.name }}.ovpn"
+  when: openvpn_client is defined
+  loop: "{{ openvpn_client }}"
+  vars:
+    loop_cert: "{{ lookup('file', '/etc/openvpn/client/' + item.name + '/' + item.name + '.crt') }}"
+    loop_key : "{{ lookup('file', '/etc/openvpn/client/' + item.name + '/' + item.name + '.key') }}"
+    loop_ca  : "{{ lookup('file', '/etc/openvpn/' + ansible_hostname + '/keys/ca.crt') }}"
+    loop_ta  : "{{ lookup('file', '/etc/openvpn/' + ansible_hostname + '/keys/ta.key') }}"
+  tags: ['openvpn', 'openvpn_client']
+

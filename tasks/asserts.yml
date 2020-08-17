@@ -1,0 +1,48 @@
+---
+- name: 'openvpn | validate | ensure Easy-RSA request Country is defined'
+  assert:
+    that: openvpn_easyrsa_req_country is defined
+    msg: '<openvpn_easyrsa_req_country> is mandatory and must be defined.'
+  when: 
+    - openvpn_server
+    - openvpn_client
+
+- name: 'openvpn | validate | ensure Easy-RSA request Province is defined'
+  assert:
+    that: openvpn_easyrsa_req_province is defined
+    msg: '<openvpn_easyrsa_req_province> is mandatory and must be defined'
+  when: 
+    - openvpn_server
+    - openvpn_client
+
+- name: 'openvpn | validate | ensure Easy-RSA request City is defined'
+  assert:
+    that: openvpn_easyrsa_req_city is defined
+    msg: '<openvpn_easyrsa_req_city> is mandatory and must be defined'
+  when: 
+    - openvpn_server
+    - openvpn_client
+
+- name: 'openvpn | validate | ensure Easy-RSA request Organization is defined'
+  assert:
+    that: openvpn_easyrsa_req_org is defined
+    msg: '<openvpn_easyrsa_req_org> is mandatory and must be defined'
+  when: 
+    - openvpn_server
+    - openvpn_client
+
+- name: 'openvpn | validate | ensure Easy-RSA request Email is defined'
+  assert:
+    that: openvpn_easyrsa_req_email is defined
+    msg: '<openvpn_easyrsa_req_email> is mandatory and must be defined'
+  when: 
+    - openvpn_server
+    - openvpn_client
+
+- name: 'openvpn | validate | ensure Easy-RSA request OU is defined'
+  assert:
+    that: openvpn_easyrsa_req_ou is defined
+    msg: '<openvpn_easyrsa_req_ou> is mandatory and must be defined'
+  when: 
+    - openvpn_server
+    - openvpn_client

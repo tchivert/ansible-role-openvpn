@@ -1,0 +1,43 @@
+# alterway - openvpn client configuration
+
+client
+dev           {{ openvpn_dev }}
+proto         {{ openvpn_proto) }}
+remote        {{ openvpn_public_ip }} {{ openvpn_port }}
+resolv-retry  infinite
+
+nobind
+
+persist-key
+persist-tun
+
+ca            [inline]
+cert          [inline]
+key           [inline]
+{% if openvpn_tls_auth is defined and openvpn_tls_auth == "true" %}
+tls-auth      [inline] 1
+{% endif %}
+
+cipher        {{ openvpn_cipher }}
+auth          {{ openvpn_auth  }}
+tls-cipher    {{ openvpn_tls_cipher }}
+
+compress      {{ openvpn_compress }}
+
+<ca>
+{{ loop_ca }}
+</ca>
+
+<cert>
+{{ loop_cert }}
+</cert>
+
+<key>
+{{ loop_key }}
+</key>
+
+{% if openvpn_tls_auth is defined and openvpn_tls_auth == "true" %}
+<tls-auth>
+{{ loop_ta }}
+</tls-auth>
+{% endif %}
