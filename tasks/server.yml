@@ -3,18 +3,21 @@
   template:
     src: "../data/openvpn/vars.j2"
     dest: "/etc/openvpn/{{ ansible_hostname }}/easy-rsa/vars"
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | cleanup everything'
   command: "./easyrsa init-pki"
   args:
     chdir: /etc/openvpn/{{ ansible_hostname }}/easy-rsa
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | create random file'
   command: "dd if=/dev/urandom of=pki/.rnd bs=256 count=1"
   args:
     chdir: /etc/openvpn/{{ ansible_hostname }}/easy-rsa
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | generate certificates'
@@ -27,6 +30,7 @@
     - ./easyrsa build-ca nopass
     - ./easyrsa gen-dh
     - ./easyrsa build-server-full {{ ansible_hostname }} nopass
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | copy certificates'
@@ -39,10 +43,12 @@
     - /etc/openvpn/{{ ansible_hostname }}/easy-rsa/pki/private/{{ ansible_hostname }}.key
     - /etc/openvpn/{{ ansible_hostname }}/easy-rsa/pki/issued/{{ ansible_hostname }}.crt
     - /etc/openvpn/{{ ansible_hostname }}/easy-rsa/pki/ca.crt
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | generate ta.key'
   command: "openvpn --genkey --secret /etc/openvpn/{{ ansible_hostname }}/keys/ta.key"
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | chmod ta.key'
@@ -51,19 +57,22 @@
     owner: root
     group: root
     mode: 0644
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | configure ifconfig-pool-persist'
   template:
     src: "../data/openvpn/ipp.txt.j2"
     dest: "/etc/openvpn/{{ ansible_hostname }}/ipp.txt"
-  when: openvpn_client is defined
+  when:
+    - is_installed
+    - openvpn_client is defined
   tags: ['openvpn', 'openvpn_server']
 
 - name: 'openvpn | copy server configuration'
   template:
     src: "../data/openvpn/server.conf.j2"
     dest: "/etc/openvpn/{{ ansible_hostname }}.conf"
+  when: is_installed
   tags: ['openvpn', 'openvpn_server']
   notify: openvpn-restart
-

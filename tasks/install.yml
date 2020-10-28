@@ -12,6 +12,7 @@
       - openssl
       - easy-rsa
     state: present
+  register: is_installed
   tags: ['openvpn', 'openvpn_install']
 
 - name: 'openvpn | create directories'
@@ -19,6 +20,7 @@
     path: /etc/openvpn/{{ ansible_hostname }}/keys
     state: directory
     mode: '0755'
+  when: is_installed
   tags: ['openvpn', 'openvpn_install']
 
 - name: 'openvpn | copy easy-rsa'
@@ -27,6 +29,7 @@
     dest: /etc/openvpn/{{ ansible_hostname }}
     owner: root
     group: root
+  when: is_installed
   tags: ['openvpn', 'openvpn_install']
 
 - name: 'openvpn | chmod +x easyrsa'
@@ -35,5 +38,5 @@
     owner: root
     group: root
     mode: 0755
+  when: is_installed
   tags: ['openvpn', 'openvpn_install']
-
