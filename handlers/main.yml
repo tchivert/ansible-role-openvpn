@@ -1,12 +1,12 @@
 ---
-- name: 'openvpn | start service'
+- name: 'openvpn-start'
   systemd:
     name: openvpn@{{ ansible_hostname }}.service
     state: started
     enabled: yes
   tags: ['openvpn']
 
-- name: 'openvpn | restart service'
+- name: 'openvpn-restart'
   systemd:
     name: openvpn@{{ ansible_hostname }}.service
     enabled: yes

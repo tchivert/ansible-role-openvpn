@@ -24,11 +24,10 @@
   tags: ['openvpn', 'openvpn_install']
 
 - name: 'openvpn | copy easy-rsa'
-  copy:
+  synchronize:
     src: /usr/share/easy-rsa
     dest: /etc/openvpn/{{ ansible_hostname }}
-    owner: root
-    group: root
+  delegate_to: "{{ inventory_hostname }}"
   when: is_installed
   tags: ['openvpn', 'openvpn_install']
 
