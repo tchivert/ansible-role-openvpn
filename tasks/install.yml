@@ -27,6 +27,7 @@
   synchronize:
     src: /usr/share/easy-rsa
     dest: /etc/openvpn/{{ ansible_hostname }}
+    recursive: yes
   delegate_to: "{{ inventory_hostname }}"
   when: is_installed
   tags: ['openvpn', 'openvpn_install']
